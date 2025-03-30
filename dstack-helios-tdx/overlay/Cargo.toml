@@ -1,0 +1,39 @@
+[package]
+name = "overlay"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "tcp_be_overlay"
+path = "src/bin/tcp_be_overlay.rs"
+required-features = ["tcpbe"]
+
+[[bin]]
+name = "tcp_framed_overlay"
+path = "src/bin/tcp_framed_overlay.rs"
+required-features = ["tcpframed"]
+
+[dependencies]
+tokio = { workspace = true }
+quinn = { workspace = true }
+qp2p = { workspace = true }
+anyhow = { workspace = true }
+bincode = { workspace = true }
+serde = { workspace = true }
+bytes = { workspace = true }
+async-trait = { workspace = true }
+mocks = { workspace = true }
+secp256k1 = { workspace = true }
+sha2 = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+diffie-hellman-secp = { workspace = true }
+tokio-util = { version = "0.7.13", features = ["codec"] }
+futures = "0.3.31"
+aes-gcm = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+default = ["quic"]
+tdx = ["mocks/tdx"]
+quic = []

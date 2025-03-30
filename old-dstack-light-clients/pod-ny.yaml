@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dstack-pod
+spec:
+  hostNetwork: false
+  ports:
+    - containerPort: 3030
+      hostPort: 3030
+      protocol: TCP
+    - containerPort: 3032
+      hostPort: 3032
+      protocol: TCP
+  containers:
+    - name: new-york-light
+      image: xycloo/new-york-light-image:latest
+      env:
+        - name: HOST
+          value: "host.containers.internal:8000"
+    - name: surpluser
+      image: xycloo/surpluser-image:latest

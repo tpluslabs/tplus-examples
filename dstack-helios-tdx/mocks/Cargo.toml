@@ -1,0 +1,21 @@
+[package]
+name = "mocks"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hex = {workspace=true}
+anyhow = {workspace=true}
+secp256k1 = {workspace=true}
+tdx-attestation = {workspace=true}
+
+[dev-dependencies]
+tokio = {workspace=true}
+sha2 = {workspace=true}
+serde = {workspace=true}
+serde_json = {workspace=true}
+reqwest = {version="0.12", features=["json"]}
+
+[features]
+default = []
+tdx = []

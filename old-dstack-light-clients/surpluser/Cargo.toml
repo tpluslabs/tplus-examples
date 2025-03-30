@@ -1,0 +1,27 @@
+[package]
+name = "surpluser"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = {workspace=true}
+anyhow = {workspace=true}
+alloy = { version = "0.9.1", features = [
+    "rpc-types",
+    "consensus",
+    "rlp",
+    "k256",
+    "provider-http",
+    "sol-types",
+    "network",
+    "ssz",
+    "json-rpc",
+    "signers",
+] }
+helios = {git = "https://github.com/a16z/helios"}
+warp = {workspace=true}
+sha2 = {workspace=true}
+secp256k1 = {workspace=true}
+hex = {workspace=true}
+serde_json = {workspace=true}
+reqwest = {workspace=true}

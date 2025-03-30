@@ -1,0 +1,35 @@
+[package]
+name = "light-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+overlay = { workspace = true }
+mocks = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+bincode = { workspace = true }
+serde = { workspace = true }
+secp256k1 = { workspace = true }
+hex = { workspace = true }
+serde_json = { workspace = true }
+tracing = {workspace=true}
+tracing-subscriber = {workspace=true}
+helios = {workspace=true}
+sha2 = {workspace=true}
+warp = {workspace=true}
+tdx-attestation = {workspace=true}
+
+# helios requires an older allow version
+alloy = { version = "0.9.1", features = [
+    "rpc-types",
+    "consensus",
+    "rlp",
+    "k256",
+    "provider-http",
+    "sol-types",
+    "network",
+    "ssz",
+    "json-rpc",
+    "signers",
+] }

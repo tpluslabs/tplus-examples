@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "new-york-light",
+    "surpluser"
+]
+
+[workspace.dependencies]
+surpluser = {path="./surpluser"}
+#dstack-core = {path="../rs-modular-dstack/dstack-core"}
+#tdx-attestation = {path="../rs-modular-dstack/crates/tdx-attestation"}
+#diffie-hellman = {path="../rs-modular-dstack/crates/diffie-hellman"}
+
+dstack-core = {git="https://github.com/heytdep/rs-modular-dstack"}
+tdx-attestation = {git="https://github.com/heytdep/rs-modular-dstack"}
+diffie-hellman = {git="https://github.com/heytdep/rs-modular-dstack"}
+
+anyhow = "1.0.96"
+sha2 = "0.10.8"
+tokio = {version="1", features = ["full"]}
+async-trait = "0.1.83"
+hex = "0.4"
+reqwest = {version = "0.12.9", features=["json"]}
+base64 = "0.22.1"
+sled = "0.34.7"
+aes-gcm = "0.10.3"
+x25519-dalek = {version="2.0.1", features=["getrandom", "static_secrets"]}
+serde = {version = "1", features=["derive"]}
+serde_json = "1"
+warp = "0.3.7"
+secp256k1 = {version="0.30.0", features=["rand"]}
