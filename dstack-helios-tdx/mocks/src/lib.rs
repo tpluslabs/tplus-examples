@@ -26,19 +26,17 @@ pub struct QuoteVerifyMock {
 
 // TODO: actually verify measurements.
 #[cfg(feature = "tdx")]
-pub async fn verify_quote(quote: &str, appdata: &[u8]) -> QuoteVerifyMock {
+pub async fn verify_quote(quote: &str, _appdata: &[u8]) -> QuoteVerifyMock {
     let attestation = Attestation::new();
     let verification = attestation.verify_quote(quote.to_string()).await;
 
     if verification.is_ok() {
         QuoteVerifyMock {
             is_valid: true,
-            is_clearing_house: false,
         }
     } else {
         QuoteVerifyMock {
             is_valid: false,
-            is_clearing_house: false,
         }
     }
 }
