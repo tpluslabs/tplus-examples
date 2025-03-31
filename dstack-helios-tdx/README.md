@@ -27,7 +27,7 @@ Among other things, this approach ensures that applications where various TEEs w
 
 > NB: there's situations where the overlay will want to share with multiple TEEs of the same authorization group. In such situations sharing a secret across authorization groups can be beneficial for networking workload on the encryption; on the full implementation we reserve a message type for this.
 
-> NB: replication is currently not safe as it's not checking measurements. This is fairly trivial to add once we employ a structured way of replicating os measurements. Hopefully we would be using something like https://github.com/kvinwang/dstack-mr.
+> NB: replication is currently **not safe** as it's **not checking measurements** (any TDX node can fake the shared dstack signature!!). Checking measurements is fairly trivial to add once the light clients app is measured into rtmr3 and we can easily deterministically reproduce application measurements. Hopefully we would be using something like https://github.com/kvinwang/dstack-mr.
 
 # A meta-dstack note
 
@@ -41,8 +41,20 @@ This implementation is currently reliant on the `mock` crate to get the quote. I
 
 ### Tplus hosted light clients
 
-**Bootstrap node**: 
-**Node 1**: 
+**Bootstrap node**: 34.53.44.42:5000
+**Node 1**: 34.162.180.226:5000
+
+You can join either of the two above nodes to join the cluster.
+
+```
+curl -X POST http://34.162.180.226:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
+
+curl -X POST http://34.53.44.42:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
+```
+
+Will yield the same signatures since the secret is replicated through the overlay (mutual attestation is still unsafe because we're not checking measurements yet! see the last not under [replication](#replication) for more details). 
+
+<hr/>
 
 See [meta-dstack-patch](./meta-dstack-patch/README.md) to build and deploy the dstack light client image.
 
