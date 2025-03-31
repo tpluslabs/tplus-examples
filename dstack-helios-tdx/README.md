@@ -39,6 +39,11 @@ This implementation is currently reliant on the `mock` crate to get the quote. I
 
 # Build and use
 
+### Tplus hosted light clients
+
+**Bootstrap node**: 
+**Node 1**: 
+
 See [meta-dstack-patch](./meta-dstack-patch/README.md) to build and deploy the dstack light client image.
 
 Once the image is deployed and running in a TD, we can setup the node (the `execution_rpc` can also be alchemy or other RPCs that support `eth_getBlockReceipts` and `eth_getProof`):
