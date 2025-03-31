@@ -1,6 +1,5 @@
 use crate::message::OverlayMessage;
-use crate::tcp::framed::TCPTransport;
-//use crate::quic::QUICTransport;
+use crate::quic::QUICTransport;
 use crate::{P2PTransportLayer, GLOB_CHANNEL_BUFFER};
 use secp256k1::SecretKey;
 use std::net::{Ipv4Addr, SocketAddr};
@@ -26,7 +25,7 @@ pub async fn setup_overlay_from_config(
     let (comms_sender, comms_receiver) = tokio::sync::mpsc::channel(GLOB_CHANNEL_BUFFER);
     let (broadcast_tx, _) = tokio::sync::broadcast::channel(GLOB_CHANNEL_BUFFER);
 
-    let handles = TCPTransport::forward_messages(
+    let handles = QUICTransport::forward_messages(
         secret_key,
         (Ipv4Addr::UNSPECIFIED, listen_port).into(),
         peers.iter().copied().collect(),

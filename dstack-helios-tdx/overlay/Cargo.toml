@@ -24,6 +24,6 @@ aes-gcm = { workspace = true }
 tracing = { workspace = true }
 
 [features]
-default = []
+default = ["quic"]
 tdx = ["mocks/tdx"]
 quic = []
