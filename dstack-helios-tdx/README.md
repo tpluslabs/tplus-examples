@@ -41,15 +41,17 @@ This implementation is currently reliant on the `mock` crate to get the quote. I
 
 ### Tplus hosted light clients
 
-**Bootstrap node**: 34.53.44.42:5000
-**Node 1**: 34.162.180.226:5000
+**Bootstrap node**: 34.168.135.112:5000
+**Node 2**: 34.162.205.94:5000
 
 You can join either of the two above nodes to join the cluster.
 
-```
-curl -X POST http://34.162.180.226:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
+Since the TEE signs with the shared key, these two calls for example should yield the same signature:
 
-curl -X POST http://34.53.44.42:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
+```
+curl -X POST http://34.168.135.112:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
+
+curl -X POST http://34.162.205.94:3032/call -H "Content-Type: application/json" -d '{"to": "0x6b175474e89094c44da98b954eedeac495271d0f", "input": "0x18160ddd"}'
 ```
 
 Will yield the same signatures since the secret is replicated through the overlay (mutual attestation is still unsafe because we're not checking measurements yet! see the last not under [replication](#replication) for more details). 
