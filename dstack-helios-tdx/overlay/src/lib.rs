@@ -29,6 +29,8 @@ pub mod p2p;
 #[cfg(feature = "quic")]
 pub mod quic;
 
+pub mod tcp;
+
 pub mod utils;
 
 pub const GLOB_CHANNEL_BUFFER: usize = 20000;
