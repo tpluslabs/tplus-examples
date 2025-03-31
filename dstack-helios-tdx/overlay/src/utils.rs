@@ -2,25 +2,23 @@ use crate::message::OverlayMessage;
 use crate::quic::QUICTransport;
 use crate::{P2PTransportLayer, GLOB_CHANNEL_BUFFER};
 use secp256k1::SecretKey;
-use std::env;
 use std::net::{Ipv4Addr, SocketAddr};
 use tokio::sync::broadcast::Sender;
 use tokio::sync::mpsc::Receiver;
 use tokio::task::JoinHandle;
 
-pub async fn setup_overlay_from_commandline(
+pub async fn setup_overlay_from_config(
     secret_key: SecretKey,
+    peers: Vec<String>,
+    listen_port: u16,
 ) -> anyhow::Result<(
     Receiver<OverlayMessage>,
     Sender<OverlayMessage>,
     Vec<SocketAddr>,
     Vec<JoinHandle<anyhow::Result<()>>>,
 )> {
-    let args: Vec<String> = env::args().collect();
-    let listen_port: u16 = args.get(1).expect("provide port number").parse().unwrap();
-    let peers: Vec<SocketAddr> = args
+    let peers: Vec<SocketAddr> = peers
         .iter()
-        .skip(2)
         .map(|addr| addr.parse().expect("invalid address"))
         .collect();
 

@@ -3,16 +3,6 @@ name = "overlay"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "tcp_be_overlay"
-path = "src/bin/tcp_be_overlay.rs"
-required-features = ["tcpbe"]
-
-[[bin]]
-name = "tcp_framed_overlay"
-path = "src/bin/tcp_framed_overlay.rs"
-required-features = ["tcpframed"]
-
 [dependencies]
 tokio = { workspace = true }
 quinn = { workspace = true }

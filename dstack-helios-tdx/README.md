@@ -27,13 +27,11 @@ Among other things, this approach ensures that applications where various TEEs w
 
 > NB: there's situations where the overlay will want to share with multiple TEEs of the same authorization group. In such situations sharing a secret across authorization groups can be beneficial for networking workload on the encryption; on the full implementation we reserve a message type for this.
 
-> NB: replication is currently not safe, see the below paragraph.
+> NB: replication is currently not safe as it's not checking measurements. This is fairly trivial to add once we employ a structured way of replicating os measurements. Hopefully we would be using something like https://github.com/kvinwang/dstack-mr.
 
 # A meta-dstack note
 
-As you'll learn when applying what is instructed in the `meta-dstack-patch`, this very first example relies on the app logic being within the TEE and there is no virtualization or abstraction for configuration environment variables yet. The reason is because we don't expect to be maintaining the base TEE dstack image ourselves. 
-
-We might change this very soon when we switch to having an alchemy API key at which point we can add logic to handle such variables even without virtualizing (think simple API to initialize the VM). Once we add this, we can start adding measurements checks even if it's not the optimal setup (on system vs reserved measurement) thus making the replication actuall safe. 
+As you'll learn when applying what is instructed in the `meta-dstack-patch`, this very first example relies on the app logic being within the TEE and there is a minimal abstraction over environment variables to have measurements be easily reproducible. The reason is because we don't expect to be maintaining the base TEE dstack image ourselves so haven't do much work on enabling virtualization and a more structured approach to measurements like splitting app and system measurements. 
 
 ## Modularization
 

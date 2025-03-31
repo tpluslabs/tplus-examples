@@ -11,12 +11,15 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use warp::Filter;
 
-pub async fn run(rx: tokio::sync::oneshot::Receiver<Vec<u8>>) -> Result<()> {
+pub async fn run(
+    rx: tokio::sync::oneshot::Receiver<Vec<u8>>,
+    alchemy_api_key: Option<String>,
+) -> Result<()> {
     tracing::info!("starting dstack light client awaiting for shared secret");
 
     match rx.await {
         Ok(node_secret_key) => {
-            run_server(node_secret_key.try_into().unwrap()).await?;
+            run_server(node_secret_key.try_into().unwrap(), alchemy_api_key).await?;
         }
         Err(_) => {
             panic!("channel dropped");
@@ -42,14 +45,20 @@ async fn get_attestation_handler(pubkey: [u8; 33]) -> Result<impl warp::Reply, w
     ))
 }
 
-async fn run_server(node_secret_key: [u8; 32]) -> anyhow::Result<()> {
+async fn run_server(
+    node_secret_key: [u8; 32],
+    alchemy_api_key: Option<String>,
+) -> anyhow::Result<()> {
     tracing::info!("got secret, starting helios light client");
     let secp = Secp256k1::new();
     println!("got associated key");
     let secret_key = secp256k1::SecretKey::from_byte_array(&node_secret_key)?;
     println!("node pubkey {}", secret_key.public_key(&secp));
 
-    let untrusted_rpc_url = "https://eth-mainnet.g.alchemy.com/v2/demo";
+    let untrusted_rpc_url = format!(
+        "https://eth-mainnet.g.alchemy.com/v2/{}",
+        alchemy_api_key.unwrap_or("demo".to_string())
+    );
     println!("Using untrusted RPC URL {}", untrusted_rpc_url);
 
     let consensus_rpc = "https://www.lightclientdata.org";
@@ -58,7 +67,7 @@ async fn run_server(node_secret_key: [u8; 32]) -> anyhow::Result<()> {
     let mut client: EthereumClient<FileDB> = EthereumClientBuilder::new()
         .network(Network::Mainnet)
         .consensus_rpc(consensus_rpc)
-        .execution_rpc(untrusted_rpc_url)
+        .execution_rpc(&untrusted_rpc_url)
         // we should turn this off in prod and find a good way to retrieve a trusted checkpoint
         .load_external_fallback()
         .data_dir(PathBuf::from("/tmp/helios"))
