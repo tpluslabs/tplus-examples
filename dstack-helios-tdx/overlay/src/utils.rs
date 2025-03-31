@@ -28,7 +28,7 @@ pub async fn setup_overlay_from_config(
 
     let handles = TCPTransport::forward_messages(
         secret_key,
-        (Ipv4Addr::LOCALHOST, listen_port).into(),
+        (Ipv4Addr::UNSPECIFIED, listen_port).into(),
         peers.iter().copied().collect(),
         comms_sender,
         broadcast_tx.clone(),
