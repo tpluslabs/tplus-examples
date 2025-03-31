@@ -13,13 +13,13 @@ use warp::Filter;
 
 pub async fn run(
     rx: tokio::sync::oneshot::Receiver<Vec<u8>>,
-    alchemy_api_key: Option<String>,
+    execution_rpc: String,
 ) -> Result<()> {
     tracing::info!("starting dstack light client awaiting for shared secret");
 
     match rx.await {
         Ok(node_secret_key) => {
-            run_server(node_secret_key.try_into().unwrap(), alchemy_api_key).await?;
+            run_server(node_secret_key.try_into().unwrap(), execution_rpc).await?;
         }
         Err(_) => {
             panic!("channel dropped");
@@ -47,22 +47,16 @@ async fn get_attestation_handler(pubkey: [u8; 33]) -> Result<impl warp::Reply, w
 
 async fn run_server(
     node_secret_key: [u8; 32],
-    alchemy_api_key: Option<String>,
+    untrusted_rpc_url: String
 ) -> anyhow::Result<()> {
     tracing::info!("got secret, starting helios light client");
     let secp = Secp256k1::new();
-    println!("got associated key");
     let secret_key = secp256k1::SecretKey::from_byte_array(&node_secret_key)?;
-    println!("node pubkey {}", secret_key.public_key(&secp));
-
-    let untrusted_rpc_url = format!(
-        "https://eth-mainnet.g.alchemy.com/v2/{}",
-        alchemy_api_key.unwrap_or("demo".to_string())
-    );
-    println!("Using untrusted RPC URL {}", untrusted_rpc_url);
+    tracing::info!("node pubkey {}", secret_key.public_key(&secp));
+    tracing::info!("Using untrusted RPC URL {}", untrusted_rpc_url);
 
     let consensus_rpc = "https://www.lightclientdata.org";
-    println!("Using consensus RPC URL: {}", consensus_rpc);
+    tracing::info!("Using consensus RPC URL: {}", consensus_rpc);
 
     let mut client: EthereumClient<FileDB> = EthereumClientBuilder::new()
         .network(Network::Mainnet)
@@ -74,14 +68,14 @@ async fn run_server(
         .build()
         .map_err(|e| anyhow!(e.to_string()))?;
 
-    println!(
+    tracing::info!(
         "Built client on network \"{}\" with external checkpoint fallbacks",
         Network::Mainnet
     );
 
     client.start().await.map_err(|e| anyhow!(e.to_string()))?;
     client.wait_synced().await;
-    println!("client synced");
+    tracing::info!("client synced");
 
     let client = Arc::new(client);
     let get_trusted_block = warp::path("block").and_then({

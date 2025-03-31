@@ -14,7 +14,7 @@ mod config_server {
     pub struct NodeConfig {
         pub peers: Vec<String>,
         pub port: u16,
-        pub alchemy_api_key: Option<String>,
+        pub execution_rpc: String,
     }
 
     pub async fn load_config_server(config_oneshot_sender: oneshot::Sender<NodeConfig>) {
@@ -80,7 +80,7 @@ async fn main() -> Result<()> {
     let (oneshot_send, oneshot_rx) = tokio::sync::oneshot::channel();
 
     let light_client_task = tokio::spawn(async move {
-        light_client::helios::run(oneshot_rx, config.alchemy_api_key)
+        light_client::helios::run(oneshot_rx, config.execution_rpc)
             .await
             .map(|_| ())
     });
