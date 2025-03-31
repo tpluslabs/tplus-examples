@@ -1,0 +1,40 @@
+[package]
+name = "qp2p"
+description = "Peer-to-peer networking library using QUIC"
+documentation = "https://docs.rs/qp2p"
+homepage = "https://maidsafe.net"
+license = "MIT OR BSD-3-Clause"
+readme = "README.md"
+repository = "https://github.com/maidsafe/qp2p"
+version = "0.36.4"
+authors = [ "MaidSafe Developers <dev@maidsafe.net>" ]
+keywords = [ "quic" ]
+edition = "2021"
+
+[[example]]
+name = "p2p_node"
+
+[dependencies]
+bincode = "1.2.1"
+bytes = { version = "1.0.1", features = ["serde"] }
+futures = "~0.3.8"
+quinn = { version = "0.9", default-features = false, features = ["tls-rustls", "ring", "runtime-tokio"] }
+quinn-proto = { version = "0.9", default-features = false, features = ["tls-rustls", "ring"] }
+rcgen = "~0.9"
+serde = { version = "1.0.117", features = ["derive"] }
+thiserror = "1.0.23"
+tokio = { version = "1.12.0", features = ["sync"] }
+tracing = "~0.1.26"
+rustls = { version = "0.20.2", default-features = false, features = ["quic", "dangerous_configuration"] }
+structopt = {version = "0.3.25", optional = true}
+webpki = "0.22.0"
+
+[dev-dependencies]
+color-eyre = "0.5.11"
+ctor = "0.1.20"
+env_logger = "0.10.0"
+rand = { version = "~0.7.3", features = [ "small_rng" ] }
+test-log = { version = "0.2.11", features = ["trace"]}
+tiny-keccak = { version = "2.0.2", features = ["sha3"] }
+tokio = { version = "1.12.0", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = "0.2.19"

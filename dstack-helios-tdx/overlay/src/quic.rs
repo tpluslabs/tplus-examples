@@ -43,7 +43,9 @@ impl P2PTransportLayer for QUICTransport {
             let comms_broadcast = comms_broadcast.clone();
             let comms_sender = sender.clone();
 
-            let (connection, incoming) = ctx.connect_to(&peer).await?;
+            println!("connecting to peer {}", peer);
+            let (connection, incoming) = ctx.connect_to(&peer).await.unwrap();
+            println!("connected to peer {}", peer);
 
             handle.spawn(async move {
                 let rx = comms_broadcast.subscribe();

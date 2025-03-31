@@ -14,7 +14,7 @@ overlay = { path = "./overlay" }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }
 bincode = "1.3.3"
-qp2p = { git = "https://github.com/maidsafe/qp2p" }
+qp2p = { path="../qp2p" }
 bytes = { version = "1.0.1", features = ["serde"] }
 mocks = { path = "./mocks", default-features = false }
 hex = "0.4.3"

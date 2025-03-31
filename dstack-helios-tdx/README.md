@@ -63,6 +63,21 @@ Example response:
 "{\"signature\":\"4760854a048d2e62f85cf2652958409ba46ce307f8ca41feada8b7464e229fff0dc7f6b6de1e5e406af5d20d8fb18bb3d92e7c6303cacc085757199f6e8b6eb1\",\"blocknum\":\"22168277\"}"
 ```
 
+## Call
+
+Call `totalSupply()` on DAI (`0x6b175474e89094c44da98b954eedeac495271d0f`):
+
+```
+curl -X POST -H "Content-Type: application/json" http://nodepublicaddress:3032/call -d '{
+  "to": "0x6b175474e89094c44da98b954eedeac495271d0f",
+  "input": "0x18160ddd"
+}'
+
+Example response:
+
+"{\"signature\":\"afee82102dba058189b389597ed13c01d77c307d5fbd3a49cc05860656af39b948454e33ecf6fee4963b3945e1d8370817157b5dc3d977b70879dbbdf8a5aa1f\",\"response\":{\"Success\":\"0x00000000000000000000000000000000000000000a4ef33decf96b6a14d0901d\"}}"
+```
+
 ## Getting attestation
 
 ```
