@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Light Client Interactions with Signature Verification</title>
+  <style>
+    body {  margin: 2rem; max-width: 800px; margin: auto }
+    label, input { font-size: 1rem; }
+    input { margin-left: 0.5rem; padding: 0.25rem; }
+    button { margin: 0.5rem 0.5rem 0.5rem 0; padding: 0.5rem 1rem; }
+    pre { background: #f4f4f4; padding: 1rem; overflow: auto; }
+    .verified { color: green; }
+    .unverified { color: red; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+</head>
+<body>
+    <div style="padding-top: 30px;">
+    <a href="https://github.com/tpluslabs/tplus-examples/tree/main/dstack-helios-tdx">source code</a>
+    </div>
+  <h1>Dstack ❤️ Helios</h1>
+  <p>Helios light clients replicated in a dstack-alike setting that communicates with a P2P networking protocol over QUIC transport which 
+    performs mutual authentication to establish a secure encrypted channel for relaying the secret during replication. The nodes that are
+    replicated then spin up a helios light client and a wrapper API around the client that signs the responses of the verified execution
+    with the TEE attested shared dstack key.
+  </p>
+  <div>
+    <label for="nodeAddress">Node address:</label>
+    <input type="text" id="nodeAddress" placeholder="nodepublicaddress">
+  </div>
+  <div id="attestationDiv" style="margin-top: 1rem;">
+    <h2>Attestation</h2>
+    <p>NB: for the below signature verification to make sense you need to verify the TDX quote for the provided public key.</p>
+    <pre id="attestationOutput">No attestation loaded.</pre>
+  </div>
+  <div style="margin-top: 1rem;">
+    <button id="btnBlock">Get Last Block</button>
+    <button id="btnTotalSupply">Call totalSupply() on DAI</button>
+  </div>
+  <h2>Response &amp; Sig Verification</h2>
+  <pre id="output"></pre>
+  <p id="verificationResult"></p>
+  <script>
+    let attestationPubKey = null;
+
+    function showOutput(id, data) {
+      const el = document.getElementById(id);
+      el.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    }
+
+    function getNodeUrl() {
+      const node = document.getElementById('nodeAddress').value.trim();
+      if (!node) {
+        alert("Please enter a node public address.");
+        return null;
+      }
+      return `http://${node}:3032`;
+    }
+
+    function verifySignature(message, signatureHex) {
+      if (!attestationPubKey) {
+        return { valid: false, error: "No attestation public key available." };
+      }
+      try {
+        const msgHash = sha256(message);
+        const ec = new elliptic.ec('secp256k1');
+        const key = ec.keyFromPublic(attestationPubKey, 'hex');
+        const r = signatureHex.slice(0, 64);
+        const s = signatureHex.slice(64, 128);
+        const sigObj = { r: r, s: s };
+        const valid = key.verify(msgHash, sigObj);
+        return { valid: valid };
+      } catch (err) {
+        return { valid: false, error: err.toString() };
+      }
+    }
+
+    document.getElementById('nodeAddress').addEventListener('change', async () => {
+      const baseUrl = getNodeUrl();
+      if (!baseUrl) return;
+      try {
+        const res = await fetch(`${baseUrl}/attest`);
+        const text = await res.text();
+        const data = JSON.parse(JSON.parse(text));
+        if (data.pubkey) {
+          attestationPubKey = data.pubkey;
+        } else {
+          attestationPubKey = null;
+        }
+        showOutput('attestationOutput', text);
+      } catch (err) {
+        showOutput('attestationOutput', err.toString());
+      }
+    });
+
+    document.getElementById('btnBlock').addEventListener('click', async () => {
+      const baseUrl = getNodeUrl();
+      if (!baseUrl) return;
+      document.getElementById('verificationResult').textContent = "";
+      try {
+        const res = await fetch(`${baseUrl}/block`);
+        const text = await res.text();
+        showOutput('output', text);
+        const data = JSON.parse(JSON.parse(text));
+        const message = data.blocknum;
+        const signatureHex = data.signature;
+        const result = verifySignature(message, signatureHex);
+        if (result.valid) {
+          document.getElementById('verificationResult').innerHTML = `<span class="verified">Signature is valid.</span>`;
+        } else {
+          document.getElementById('verificationResult').innerHTML = `<span class="unverified">Signature is invalid. ${result.error || ""}</span>`;
+        }
+      } catch (err) {
+        showOutput('output', err.toString());
+      }
+    });
+
+    document.getElementById('btnTotalSupply').addEventListener('click', async () => {
+      const baseUrl = getNodeUrl();
+      if (!baseUrl) return;
+      document.getElementById('verificationResult').textContent = "";
+      try {
+        const payload = {
+          to: "0x6b175474e89094c44da98b954eedeac495271d0f",
+          input: "0x18160ddd"
+        };
+        const res = await fetch(`${baseUrl}/call`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const text = await res.text();
+        showOutput('output', text);
+        const resp = JSON.parse(JSON.parse(text));
+        const signatureHex = resp.signature;
+        const message = JSON.stringify(resp.response);
+        const result = verifySignature(message, signatureHex);
+        if (result.valid) {
+          document.getElementById('verificationResult').innerHTML = `<span class="verified">Signature is valid.</span>`;
+        } else {
+          document.getElementById('verificationResult').innerHTML = `<span class="unverified">Signature is invalid. ${result.error || ""}</span>`;
+        }
+      } catch (err) {
+        showOutput('output', err.toString());
+      }
+    });
+  </script>
+</body>
+</html>

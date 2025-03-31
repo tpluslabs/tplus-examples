@@ -126,7 +126,12 @@ async fn run_server(
             }
         });
 
-    warp::serve(get_trusted_block.or(rpc_call).or(get_attestation))
+    let cors = warp::cors()
+        .allow_any_origin()
+        .allow_methods(vec!["GET", "POST"])
+        .allow_headers(vec!["Content-Type"]);
+
+    warp::serve(get_trusted_block.or(rpc_call).or(get_attestation).with(cors))
         .run(([0, 0, 0, 0], 3032))
         .await;
 
