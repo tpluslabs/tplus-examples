@@ -10,9 +10,9 @@ All communications are carried through the `/overlay` library, a stripped down v
 
 > NB: we're not necessarily advocating for dstack nodes to infer the cluster they want to join based on operator choices. This is an experiment.
 
-When a node is spinned up without specifying peers it assumes it's being bootstrapped and creates it own view of the dstack newtork. Other peers can now be spinned up and join the bootstrapped node.
+When a node is spinned up without specifying peers it assumes it's being bootstrapped and creates it own view of the dstack network. Other peers can now be spun up and join the bootstrapped node.
 
-When they request to join the bootsrapped node a P2P connection over QUIC is established between the two peers as follows:
+When they request to join the bootstrapped node a P2P connection over QUIC is established between the two peers as follows:
 
 ```
 Peer wants to join bootstrap B_0 -> Peer establishes connection with B_0.
