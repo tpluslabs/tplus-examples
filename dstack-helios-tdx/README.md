@@ -2,7 +2,7 @@
 
 ## TEE and light clients? 
 
-Read the writeup [here](#).
+Read the writeup [here](https://heytdep.github.io/post/28/post.html).
 
 ## Replication
 
