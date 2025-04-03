@@ -26,9 +26,13 @@
     replicated then spin up a helios light client and a wrapper API around the client that signs the responses of the verified execution
     with the TEE attested shared dstack key.
   </p>
+  <p style="color: red;">NB: We haven't added certificates yet so this won't work unless it's coming from localhost. To try the functionality below you'll need
+    to open or serve `tplus-examples/dstack-helios/tdx/index.html` locally (e.g `git clone https://github.com/tpluslabs/tplus-examples;cd dstack-helios-tdx;http-server`)
+  </p>
   <div>
     <label for="nodeAddress">Node address:</label>
     <input type="text" id="nodeAddress" placeholder="nodepublicaddress">
+    <p>We already have deployed 34.168.135.112 and 34.162.205.94</p>
   </div>
   <div id="attestationDiv" style="margin-top: 1rem;">
     <h2>Attestation</h2>
