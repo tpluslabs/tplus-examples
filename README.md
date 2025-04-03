@@ -8,7 +8,7 @@ Collection of prototype standalone projects taken from a subset of the internal 
 
 1. It uses a prototype of the networking implementation we're internally developing to create a P2P network of connected TEEs. More about the networking layer will be shared in our research write ups when talking about censorship resistance and MPC.
 
-2. We explore helios and do some considerations about light clients' affinity with a trusted execution environemnt. Read more in the [writeup](#)
+2. We explore helios and do some considerations about light clients' affinity with a trusted execution environemnt. Read more in the [writeup](https://heytdep.github.io/post/31/post.html)
 
 # `old-dstack-light-clients`
 
