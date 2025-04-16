@@ -41,8 +41,8 @@ This implementation is currently reliant on the `mock` crate to get the quote. I
 
 ### Tplus hosted light clients
 
-**Bootstrap node**: 34.168.135.112:5000
-**Node 2**: 34.162.205.94:5000
+**Bootstrap node**: 34.162.120.87:5000
+**Node 2**: 35.247.89.153:5000
 
 You can join either of the two above nodes to join the cluster.
 
